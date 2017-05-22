@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        *{
+            margin: 5px;
+        }
+{#        body{#}
+{#            background-color: #2a6496;#}
+{#        }#}
+        .commd_div{
+{#            width: 90%;#}
+{#            bottom: 0;#}
+{#            background-color: #1eacae;#}
+        }
+        .font_td{
+            color: #1a7bb9;
+        }
+        .none{
+            display: none;
+        }
+        .block{
+            display: block;
+        }
+
+        .jiacu{
+            font-weight:bold;
+        }
+    </style>
+{#    <link href="/static/jms/bootstrap.min.css" rel="stylesheet">#}
+{#    <script src="/static/jms/jquery-2.1.1.js"></script>#}
+{#    <script src="/static/jms/bootstrap.min.js"></script> #}
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/static/js/jquery-3.2.1.js"></script>
+</head>
+<body>
+    <form name="salt_client_to_api" action="/salt" method="POST" class="container">
+    <div>
+        <div>
+            <input type="text" value="localhost" name="client" readOnly="true" style="display: none;">
+            <div class="input-prepend" style="padding:10px;">
+              <input class="span2" type="text" placeholder="*" name="host_key" value="{{ from_list.host_key }}">
+              <span class="add-on">host_key</span>
+            </div>
+            <div class="input-prepend" style="padding:10px;">
+              <input class="span2" type="text" placeholder="cmd.run" name="type" value="{{ from_list.type }}">
+              <span class="add-on">type</span>
+            </div>
+{#            <select name="type">#}
+{#                <option value="0">test.ping</option>#}
+{#                <option value="1">cmd.run</option>#}
+{#                <option value="2">cmd.script</option>#}
+{#            </select>#}
+            <div class="input-prepend" style="padding:10px;">
+
+            <input class="span2" type="text" placeholder="可以为null" name="commd" value="{{ from_list.commd }}">
+            <span class="add-on" name="commd_text">commd</span>
+            </div>
+            <div style="position: relative;left:260px;top: -35px;">
+            <input type="submit" placeholder="submit" class="btn">
+            <input type="reset" placeholder="reset" class="btn">
+            <input type="button" value="隐藏全部" id="all_none" class="btn btn-info all_none">
+            <input type="button" value="展开全部" id="all_block" class="btn btn-success all_block"><br>
+            </div>
+{#            <div name="false_keys">#}
+{#                {% for i in false_keys %}#}
+{#                    <div class="text-warning" style="font-size: 18px;">#}
+{#                    {{ i }} False#}
+{#                    </div>#}
+{#                {% endfor %}#}
+{#            </div>#}
+        </div>
+
+    </div>
+    </form>
+    <tr class="commd_div container-fluid" style="height: 2000px;margin: 0px">
+
+{#        {% for key,value in commd_log.items %}#}
+{#          <tr>#}
+{#          <p class="text-warning" style="font-size: 25px;">{{ key }}&nbsp;<input type="button" value="隐藏" class="span_none btn btn-mini btn-primary"><input type="button" value="展开" class="span_block btn btn-mini btn-primary"></p><br>#}
+{#          {% if value.stdout %}#}
+{#              <pre class="font_td block">#}
+{#                  <p>pid:{{ value.pid }}</p>#}
+{#                  <p>retcode:{{ value.retcode }}</p>#}
+{#                  {{ value.stdout|linebreaks }}#}
+{#              </pre><br>#}
+{#          {% elif value.sterr %}#}
+{#              <pre class="font_td block">#}
+{#                  <p>pid:{{ value.pid }}</p>#}
+{#                  <p>retcode:{{ value.retcode }}</p>#}
+{#                  {{ value.stderr|linebreaks }}#}
+{#              </pre><br>#}
+{#          {% else %}#}
+{#              <pre class="font_td block">{{ value|linebreaks }}</pre><br>#}
+{#              <div>什么都不是</div>#}
+{#          {% endif %}#}
+{#          </tr>#}
+{#        {% endfor %}#}
+{#============#}
+{#    {{ commd_log }}#}
+
+        {% for i in false_keys %}
+        <tr>
+            <p class="text-warning" style="font-size: 18px;">{{ i }}<font size="3" color="red">断开连接的minion</font>{#  <input type="button" value="隐藏" class="btn btn-info span_none"><input type="button" value="展开" class="btn btn-success span_block">#}</p>
+            <pre class="font_td block" style="color: red">False</pre>
+        </tr>
+        {% endfor %}
+{#命令返回值输出#}
+        {% for key,value in commd_log.items %}
+          <tr>
+{#          {% if key %}#}
+{##}
+{#          {% else %}#}
+              <p class="text-warning" style="font-size: 18px;">{{ key }}&nbsp;<input type="button" value="隐藏" class="btn btn-info span_none"><input type="button" value="展开" class="btn btn-success span_block"></p><br>
+              <pre class="font_td block">{{ value|linebreaks }}</pre>
+{#          {% endif %}#}
+          </tr>
+         {% endfor %}
+
+
+    </div>
+
+
+{#    <iframe src="http://123.56.22.43/zabbix/zabbix.php?action=dashboard.view&ddreset=1" width="800px" height="600px" scrolling="auto" frameborder="2px"> </iframe>#}
+
+
+    <script>
+        $(document).ready(function () {
+            console.log()
+            {{ from_list.alert|safe }}
+        })
+    </script>
+    <script type="text/javascript">
+    $(document).ready(function() {
+        {#        隐藏全部回执信息#}
+        $("#all_none").click(function(){
+            $("pre").removeClass("block").addClass("none");
+        });
+        {#        显示全部回执信息#}
+        $("#all_block").click(function(){
+            $("pre").removeClass("none").addClass("block");
+        });
+        {#        隐藏回执信息#}
+        $(".span_none").click(function(){
+            $(this).parent().next().next().removeClass("block").addClass("none");
+        });
+        {#        显示回执信息#}
+        $(".span_block").click(function(){
+            $(this).parent().next().next().removeClass("none").addClass("block");
+        });
+    });
+    {#        是否显示commd输入框 #}
+    function commd() {
+        var type = $("input[name='type']").val();
+        if ($("input[name='type']").val() == "test.ping") {
+            $("input[name='commd']").addClass("none");
+            $("span[name='commd_text']").text("");
+        } else if ($("input[name='type']").val() == "cmd.run") {
+            $("input[name='commd']").removeClass("none");
+            $("span[name='commd_text']").text("commd");
+        } else if ($("input[name='type']").val() == "cmd.script") {
+            $("input[name='commd']").removeClass("none");
+            $("span[name='commd_text']").text("commd");
+        } else {
+            $("input[name='commd']").removeClass("");
+            $("span[name='commd_text']").text("commd");
+        }
+    }
+
+    {#        调用commd 函数 #}
+    $(document).ready(function () {
+        $("input[name='type']").focus(function () {
+            commd()
+        });
+        $("input[name='type']").blur(function () {
+            commd()
+        });
+        $("input[name='type']").mouseenter(function () {
+            commd()
+        });
+        $("input[name='type']").mouseleave(function () {
+            commd()
+        });
+        $("input[name='commd']").mousedown(function () {
+            commd()
+        });
+        $("input[name='commd']").focus(function () {
+            commd()
+        });
+    });
+{#    暂时弄不了True 是红色 Fales 是红色#}
+    $(document).ready(function () {
+        $("pre").each(function () {
+           if ($(this).text() == "True") {
+                $(this).css("color", "green");
+            }
+        })
+    })
+    </script>
+</body>
+</html>
